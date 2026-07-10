@@ -1,7 +1,7 @@
 # claude-code-multi-account
 
 Claude Code에서 **설정은 공유하고 계정(자격증명)만 분리**해서 쓰기 위한 세팅 스크립트 모음입니다.
-회사용 / 개인용 계정을 오갈 때 매번 로그아웃·로그인하지 않고, `claude-work` / `claude-personal` 같은 명령으로 전환할 수 있게 해줍니다.
+회사용 / 개인용 계정을 오갈 때 매번 로그아웃·로그인하지 않고, `claude-personal` / `claude-work` 같은 명령으로 전환할 수 있게 해줍니다.
 
 - 지원 OS: **macOS**, **Ubuntu/Linux**
 - 지원 셸: **bash**, **zsh** (그 외 셸은 붙여넣을 alias를 출력)
@@ -78,8 +78,8 @@ chmod +x claude-multi-account-setup.sh
 `git ls-files` 로 **git이 추적하는 항목만** 자동 판별해 공유 대상으로 삼습니다(= git이 곧 "공유 목록").
 
 - 기존 `~/.claude` 는 **계정 1(기본)로 그대로 유지** → 재로그인 불필요
-  (`claude-work` alias는 `CLAUDE_CONFIG_DIR` 을 건드리지 않고 기본값을 씁니다)
-- `~/.claude-personal` 을 계정 2로 만들어 git 추적 항목을 원본으로 링크
+  (`claude-personal` alias는 `CLAUDE_CONFIG_DIR` 을 건드리지 않고 기본값을 씁니다)
+- `~/.claude-work` 를 계정 2로 만들어 git 추적 항목을 원본으로 링크
 - `.credentials.json` 등 비밀·상태 파일은 공유에서 제외하며, 실수로 git에 추적 중이면 경고
 
 ```bash
@@ -90,8 +90,8 @@ chmod +x claude-shared-git-profiles.sh
 커스터마이즈 (스크립트 상단):
 
 - `SOURCE_DIR="$HOME/.claude"` — git으로 관리 중인 공유 원본
-- `BASE_PROFILE_NAME="work"` — 기존 `~/.claude` 를 가리킬 alias 이름
-- `EXTRA_PROFILES=("personal")` — 추가로 만들 계정 이름들
+- `BASE_PROFILE_NAME="personal"` — 기존 `~/.claude` 를 가리킬 alias 이름 (기본 계정, 재로그인 불필요)
+- `EXTRA_PROFILES=("work")` — 추가로 만들 계정 이름들
 - `NEVER_SHARE=(...)` — 추적되더라도 절대 공유하지 않을 항목
 
 > `commands/` 같은 디렉토리는 통째로 공유됩니다. 그 안에 계정별로 달라야 하는 파일이 있다면
@@ -105,13 +105,13 @@ chmod +x claude-shared-git-profiles.sh
 2. 셸 설정 다시 불러오기: `source ~/.zshrc` (또는 새 터미널)
 3. 계정별 최초 1회 로그인:
    ```bash
-   claude-work        # (git 방식) 기존 계정이면 재로그인 불필요
-   claude-personal    # 실행 후 /login
+   claude-personal    # (git 방식) 기존 계정이면 재로그인 불필요
+   claude-work        # 실행 후 /login
    ```
 4. 확인:
    ```bash
-   claude-work auth status
    claude-personal auth status
+   claude-work auth status
    ```
 
 ---
@@ -121,8 +121,8 @@ chmod +x claude-shared-git-profiles.sh
 **계정 분리 확인**
 
 ```bash
-claude-work auth status
 claude-personal auth status
+claude-work auth status
 # 서로 다른 계정 정보가 나오면 정상
 ```
 
